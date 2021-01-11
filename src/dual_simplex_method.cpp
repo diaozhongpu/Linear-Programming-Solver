@@ -80,7 +80,7 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
         for(int i=0;i<n;i++){
             if(delta[i] > 0){
                 cout<<"dual not works"<<endl;
-                return -0xffffffff;//对偶问题不可行
+                return 0xffffffff;//对偶问题不可行
             }
             else{
                 cout<<delta[i];
@@ -137,7 +137,7 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
                 }
                 else{// if not taken
                     cout<<"cannot let the simplex works"<<endl;
-                    return 0;
+                    return 0xffffffff;
                 }
             }//选定了入基变量，此时可以换基了。
             //换基
