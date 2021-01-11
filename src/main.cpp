@@ -9,9 +9,18 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cmath>
 
 using namespace std;
 
+void VectorPrintI(vector<int> path)
+{
+	std::vector<int>::const_iterator i;
+	cout<<"[ ";
+	for (i = path.begin(); i != path.end(); ++i)
+    	cout << *i << ' ';
+    cout<<"]"<<endl;
+}
 
 void VectorPrint(vector<double> path)
 {
@@ -38,7 +47,7 @@ void MatrixPrint(vector< vector<double> > a)
 int main(void)
 {
 	int n, m;
-	int i, j;
+	int i, j, iXInR, t;
 	double dtmp;
 	int itmp;
 	vector<double> vdtmp;
@@ -52,7 +61,12 @@ int main(void)
 
 	int k;
 	double z;
+	vector<double> realx;
+	vector<double> finx;
+	double finopt=-INFINITY;
+	vector<int> finE;
 	vector<double> x;
+	double opt;
 
 	cout<<"Please input"<<endl;
 
@@ -70,7 +84,7 @@ int main(void)
 	for(j=0; j<m; j++)
 	{
 		vdtmp.clear();
-		for(i=0; i<n; i++)
+		for(i=0; i<n; i++) // a
 		{
 			cin>>dtmp;
 			vdtmp.push_back(dtmp);
@@ -92,16 +106,181 @@ int main(void)
 	}
 
 
+	// 不考虑超定问题
+	// 将等式放到最前面
+	int artVarNum=0; // number of artificial variables
+	vector<int>::iterator dnth;
+	vector< vector<double> >::iterator anth;
+	for(j=0; j<d.size(); j++)
+	{
+		if(d[j]==1&&d[j]==-1)
+		{
+			artVarNum++;
+		}
+		else
+		{
+			d.insert(d.begin(), e[j]);
+			dnth = d.begin() + j+1;
+			d.erase(dnth);
+			a.insert(a.begin(), a[j]);
+			anth = a.begin() + j+1;
+			a.erase(anth);
+		}
+	}
 
 
 
-	// Call Algorithms
+
+
+	// standardize 
+
+	// divide x \in R: e 1, >=0; 0, R; -1, <=0
+	vector<int> xInR;
+	for(i=0; i<n; i++)
+	{
+		if(e[i]==0)
+		{
+			xInR.push_back(i);
+		}
+	}
+	VectorPrintI(xInR);
+	vector< vector<double> > A;
+	vector<double> C;
+	vector<int> E;
+	VectorPrintI(e);
+	int firstAnswer=1;
+	for(iXInR=0; iXInR<(2<<(xInR.size())/2); iXInR++)
+	{
+		// change x in R into 2 seperate x>=0 and x<=0
+		// change e
+		E=e;//copy
+		if(xInR.size()>=1)
+		{
+			for(j=0; j<xInR.size(); j++)
+			{
+				if((2*iXInR/(2<<j))%2==1)
+				{
+					//printf("j=%d, iXInR=%d, (2<<j)/2=%d, E[%d]=1\n", j, iXInR, (2<<j)/2, xInR[j]);
+					E[xInR[j]]=1;
+				}
+				else
+				{
+					//printf("j=%d, iXInR=%d, (2<<j)/2=%d, E[%d]=-1\n", j, iXInR, (2<<j)/2, xInR[j]);
+					E[xInR[j]]=-1;
+				}
+			}
+		}
+
+
+		//printf("[%d]:", iXInR);
+		VectorPrintI(E);
+
+
+		// add artificial variables +-a.r.; not for == 
+
+		C=c;
+
+
+		for(j=0; j<m-artVarNum; j++)
+		{
+			vdtmp.clear();
+			vdtmp=a[j];
+			for(i=0; i<artVarNum; i++)
+			{
+				vdtmp.push_back(0);
+			}
+			A.push_back(vdtmp);
+		}
+
+		for(j=m-artVarNum; j<m; j++)
+		{
+			vdtmp.clear();
+			vdtmp=a[j];
+			for(i=0; i<artVarNum; i++) // a
+			{
+				if(i==(j-(m-artVarNum)))
+				{
+					vdtmp.push_back(1);
+				}
+				else
+				{
+					vdtmp.push_back(0);
+				}
+			}
+			A.push_back(vdtmp);
+
+			C.push_back(0);
+			E.push_back(d[j]);
+		}
+
+		// 行变换==为基
+		for(j=m-artVarNum-1; j>=0; j--)
+		{
+			for(i=0; i<A[j].size(); i++)
+			{
+				A[j][i]/=A[j][j];
+			}
+			for(i=0; i<m; i++)
+			{
+				if(i!=j)
+				{
+					for(t=0; t<A[i].size(); t++)
+					{
+						A[i][t]=A[i][t]-A[j][t]*A[i][j];//A[j][j]==1
+					}
+				}
+			}
+		}
+
+		// change variable sign
+		for(i=0; i<E.size(); i++)//n+artVarNum
+		{
+			if(E[i]==-1)
+			{
+				for(j=0; j<m; j++)
+				{
+					A[j][i]=-A[j][i];
+				}
+				C[i]=-C[i];
+			}
+		}
 
 
 
+		// Call Algorithms
 
+
+		/* M constraints, N variables (with artificial, etc)
+		 * A (M)*(N+1) matrix, first N column is variable, of which last M is selected as base variable
+		 * C (N) objective function co
+		 *
+		 */
+		//opt=dual(A, C, &nx);
+		//return x and opt
+		opt=123;
+		x=C;
+
+		if(xInR.size()==0)
+		{
+			finopt=opt;
+			finx=x;
+			finE=E;
+			break;
+		}
+
+		if(opt>finopt)
+		{
+			finopt=opt;
+			finx=x;
+			finE=E;
+		}
+
+
+	}
 
 	// Output Display
+	// merge opt
+	// fix variable sign
 	switch(k)
 	{
 		case -1: 
@@ -111,9 +290,15 @@ int main(void)
 			cout<<"Infinite Solution"<<endl;
 			break;
 		case 1:
+			for(i=0; i<n; i++)
+			{
+				realx.push_back(finx[i]*finE[i]);
+			}
 			cout<<"Solution:"<<endl;
 			cout<<"Objective Function Optimal: "<<z<<endl;
-			cout<<"Variable Values"<<x<<endl;
+			cout<<"Variable Values"<<endl;
+			VectorPrint(realx);
+			cout<<endl;
 			break;
 		default:
 			cout<<"ERROR"<<endl;
