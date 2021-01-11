@@ -5,7 +5,7 @@
 using namespace std;
 
 double dual_simplex_method();
-void row_transformation(vector< vector<double> > a,vector<double> &b,vector<double> delta, vector<int> base, int m,int n);
+void row_transformation(vector< vector<double> > a,vector<double> b,vector<double> delta, vector<int> base, int m,int n);
 int main(){
     
     return 0;
@@ -32,7 +32,7 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
     //c有n个，但是a一行有n+1列。
     int n = c.size();
     int m = a.size();
-    // vector <double> b;//m个约束的等式右边
+    vector <double> b;//m个约束的等式右边
     vector <double> delta;//检验数，全部为非正表示对偶可行。
     vector <double> theta;//这个是选择入基变量时的依据，正数theta越小，越优先入基。
     vector <int> base;//用来记录m个基，m个基对应n个x中的哪些x
@@ -77,7 +77,7 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
         else{//b中一定有小于0的
             int cur_out_base = 0;
             int first_in_base = 0;//这个变量没用，就是为了给smallest_in_base变量做初始化，防止它找不到第一个符合条件的theta。
-            int smallest_in_base;
+            int smallest_in_base = 0;
             for(int j=0;j<m;j++){
                 if(b[j] < 0&&b[j] < b[cur_out_base]){
                 cur_out_base = j;//这里得到的是m个约束中的序号
@@ -107,7 +107,7 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
             base[cur_out_base] = smallest_in_base;//m个基中的第cur_out_base个基，变成刚刚的入基数。
             double transfer[m];//变换其他m+1个约束，使得刚入基的列满足只有一个1，其他全是0。
             for(int j=0;j<m;j++){
-                transfer[j] = a[j][base[cur_out_base]]/a[cur_out_base][base[cur_out_base]];
+                transfer[j] = a[j][base[cur_out_base]] / a[cur_out_base][base[cur_out_base]];
             }
             for(int j=0;j<m;j++){
                 for(int i=0;i<n;i++){
@@ -132,10 +132,10 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
         a[j][n-1] = b[j];
         x[base[j]] = b[j];
     }//把b赋回去，也把数值交给x。
-
+    return result;
 }
 
-void row_transformation(vector< vector<double> > a,vector<double> &b,vector<double> delta, vector<int> base, int m,int n){//此函数目标是将一个标准型函数，以及给定的基，进行行变换，得到部分为01矩阵的A。
+void row_transformation(vector< vector<double> > a,vector<double> b,vector<double> delta, vector<int> base, int m,int n){//此函数目标是将一个标准型函数，以及给定的基，进行行变换，得到部分为01矩阵的A。
     for(int k=0;k<m;k++){
         vector <double> transfer;
         for(int j=0;j<m;j++){
