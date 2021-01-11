@@ -255,7 +255,7 @@ int main(void)
 		 * C (N) objective function co
 		 *
 		 */
-		//opt=dual(A, C, &nx);
+		//opt=simplex(A, C, &nx);
 		//return x and opt
 		opt=123;
 		x=C;
