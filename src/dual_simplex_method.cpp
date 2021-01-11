@@ -66,7 +66,21 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
     for(int j =0;j<m;j++){
         base.push_back(n-m+j);
     }//从矩阵中得到base
+    cout<<"A ori"<<endl;
+    for(int j =0;j<m;j++){
+        for(int i =0;i<n;i++){
+            cout<< a[j][i] <<" ";
+        }
+        cout<<endl;
+    }
     row_transformation(a, b, delta, base, m, n);
+    cout<<"A"<<endl;
+    for(int j =0;j<m;j++){
+        for(int i =0;i<n;i++){
+            cout<< a[j][i] <<" ";
+        }
+        cout<<endl;
+    }
     vector <int> base_in_history(n,0);//定义入基的历史个数，入基次数多的尽可能不入基。
     while(1){
         //判断对偶问题是否可行
@@ -115,10 +129,18 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
                         //
                         smallest_in_base = i;//更新最小的theta，准备入基。
                         base_in_history[i]++;
+                        if(base_in_history[i] >= 100){
+                            cout<<"too many times,break"<<endl;
+                            break;
+                        }
                     }
                     else if(theta[i] == theta[smallest_in_base]&&base_in_history[i] < base_in_history[smallest_in_base]){
                         smallest_in_base = i;
                         base_in_history[i]++;
+                        if(base_in_history[i] >= 100){
+                            cout<<"too many times,break"<<endl;
+                            break;
+                        }
                     }
                 }
                 else{// if not taken

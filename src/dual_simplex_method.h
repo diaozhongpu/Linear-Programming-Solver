@@ -1,5 +1,4 @@
-#pragma once
-
+#ifndef _DUAL_SIMPLEX_METHOD_H_
 #include <iostream>
 #include <vector>
 // #include <math>
@@ -25,3 +24,5 @@ void row_transformation(vector< vector<double> > a,vector<double> b,vector<doubl
  * 如果还是出现死循环，策略：当他入基次数特别多的时候，输出一下每次的矩阵，以及对应theta，并且使程序停下来。（暂未实现）
 */
 double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<double> &x);
+
+#endif 

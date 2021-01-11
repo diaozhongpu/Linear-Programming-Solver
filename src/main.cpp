@@ -37,7 +37,7 @@ void MatrixPrint(vector< vector<double> > a)
 {
 	int j;
 	cout<<"["<<endl;
-	for(j=0; j<a.size(); j++)
+	for(j=0; j < (int)a.size(); j++)
 	{
 		cout<<"  ";
 		VectorPrint(a[j]);
@@ -61,7 +61,7 @@ int main(void)
 	vector<int> d;
 	vector<int> e;
 
-	int k;
+	int k = 0;
 	vector<double> realx;
 	vector<double> finx;
 	double finopt=-INFINITY; // min or max?
@@ -120,7 +120,7 @@ int main(void)
 	vector<int>::iterator dnth;
 	vector< vector<double> >::iterator anth;
 	vector<int> baseMap;
-	for(j=0; j<d.size(); j++)
+	for(j=0; j<(int)d.size(); j++)
 	{
 		if(d[j]==1&&d[j]==-1)
 		{
@@ -158,7 +158,7 @@ int main(void)
 	vector<double> C;
 	vector<int> E;
 	VectorPrintI(e);
-	if(xInR.size()==0)
+	if((int)xInR.size()==0)
 	{
 		// change x in R into 2 seperate x>=0 and x<=0
 		// change e
@@ -202,10 +202,10 @@ int main(void)
 			E.push_back(d[j]);
 		}
 
-		// 行变换==为基
+		// 行变�?==为基
 		for(j=m-artVarNum-1; j>=0; j--)
 		{
-			for(i=0; i<A[j].size(); i++)
+			for(i=0; i<(int)A[j].size(); i++)
 			{
 				if(A[j][j]==0)
 				{
@@ -218,7 +218,7 @@ int main(void)
 			{
 				if(i!=j)
 				{
-					for(t=0; t<A[i].size(); t++)
+					for(t=0; t<(int)A[i].size(); t++)
 					{
 						A[i][t]=A[i][t]-A[j][t]*A[i][j];//A[j][j]==1
 					}
@@ -227,7 +227,7 @@ int main(void)
 		}
 
 		// change variable sign
-		for(i=0; i<E.size(); i++)//n+artVarNum
+		for(i=0; i<(int)E.size(); i++)//n+artVarNum
 		{
 			if(E[i]==-1)
 			{
@@ -261,14 +261,14 @@ int main(void)
 	}
 	else
 	{
-		for(iXInR=0; iXInR<(2<<(xInR.size())/2); iXInR++)
+		for(iXInR=0; iXInR<(2<<((int)xInR.size())/2); iXInR++)
 		{
 			// change x in R into 2 seperate x>=0 and x<=0
 			// change e
 			E=e;//copy
-			if(xInR.size()>=1)
+			if((int)xInR.size()>=1)
 			{
-				for(j=0; j<xInR.size(); j++)
+				for(j=0; j<(int)xInR.size(); j++)
 				{
 					if((2*iXInR/(2<<j))%2==1)
 					{
@@ -301,6 +301,8 @@ int main(void)
 				{
 					vdtmp.push_back(0);
 				}
+				vdtmp.push_back(b[j]);
+				cout<<"fuck you"<<endl;
 				A.push_back(vdtmp);
 			}
 
@@ -325,10 +327,10 @@ int main(void)
 				E.push_back(d[j]);
 			}
 
-			// 行变换==为基
+			// 行变�?==为基
 			for(j=m-artVarNum-1; j>=0; j--)
 			{
-				for(i=0; i<A[j].size(); i++)
+				for(i=0; i<(int)A[j].size(); i++)
 				{
 					if(A[j][j]==0)
 					{
@@ -341,7 +343,7 @@ int main(void)
 				{
 					if(i!=j)
 					{
-						for(t=0; t<A[i].size(); t++)
+						for(t=0; t<(int)A[i].size(); t++)
 						{
 							A[i][t]=A[i][t]-A[j][t]*A[i][j];//A[j][j]==1
 						}
@@ -350,7 +352,7 @@ int main(void)
 			}
 
 			// change variable sign
-			for(i=0; i<E.size(); i++)//n+artVarNum
+			for(i=0; i<(int)E.size(); i++)//n+artVarNum
 			{
 				if(E[i]==-1)
 				{
