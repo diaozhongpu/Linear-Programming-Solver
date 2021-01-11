@@ -11,7 +11,7 @@
 #include <string>
 #include <cmath>
 
-#include "dual_simplex_method.cpp"
+#include "dual_simplex_method.h"
 
 using namespace std;
 
@@ -249,6 +249,10 @@ int main(void)
 		 * C (N) objective function co
 		 *
 		 */
+        for(i=0; i<n+artVarNum; i++)
+        {
+            finx.push_back(-1);
+        }
 		finopt=dual_simplex_method(A, C, finx);
 
 		finE=E;
@@ -370,6 +374,10 @@ int main(void)
 			 */
 			
             // k
+            for(i=0; i<n+artVarNum; i++)
+            {
+                x.push_back(-1);
+            }
 			opt=dual_simplex_method(A, C, x);
 			
 			if(opt>finopt)//update optimal if has x in R

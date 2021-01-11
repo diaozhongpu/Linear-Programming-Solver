@@ -2,11 +2,34 @@
 #include <vector>
 // #include <math>
 
+
 using namespace std;
 
-//double dual_simplex_method();
-void row_transformation(vector< vector<double> > a,vector<double> b,vector<double> delta, vector<int> base, int m,int n);
 
+void row_transformation(vector< vector<double> > a,vector<double> b,vector<double> delta, vector<int> base, int m,int n)
+{ //此函数目标是将一个标准型函数，以及给定的基，进行行变换，得到部分为01矩阵的A。
+    for(int k=0;k<m;k++){
+        vector <double> transfer;
+        for(int j=0;j<m;j++){
+            transfer.push_back(a[j][base[k]]/a[k][base[k]]);
+        }
+        for(int j=0;j<m;j++){
+            for(int i=0;i<n;i++){
+                if(j == k){
+                    a[k][i] = a[k][i]/a[k][base[k]];
+                }
+                else{
+                    a[j][i] = a[j][i]-a[k][i]*transfer[j];
+                }
+            }
+            if(j == k)b[j] = b[j]/a[k][base[k]];
+            else b[j] = b[j]-b[k]*transfer[j];
+        }//修改所有行列
+        for(int i = 0; i < n;i++){
+                delta[i] = delta[i] - a[k][i]*delta[base[k]]/a[k][base[k]];
+        }//修改delta
+    }
+}
 
 /*
 
@@ -35,13 +58,13 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
     vector <int> base;//用来记录m个基，m个基对应n个x中的哪些x
     double result = 0;
     for(int i =0;i<n;i++){
-        delta[i] = c[i];
+        delta.push_back(c[i]);
     }//从矩阵中得到delta
     for(int j =0;j<m;j++){
-        b[j] = a[j][n-1];
+        b.push_back(a[j][n-1]);
     }//从矩阵中得到b
     for(int j =0;j<m;j++){
-        base[j] = n-m+j;
+        base.push_back(n-m+j);
     }//从矩阵中得到base
     row_transformation(a, b, delta, base, m, n);
     vector <int> base_in_history(n,0);//定义入基的历史个数，入基次数多的尽可能不入基。
@@ -87,7 +110,7 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
                         base_in_history[i]++;
                         first_in_base = 1;
                     }
-                    theta[i] = delta[i]/a[cur_out_base][i];//不可能会出现除以0的情况，因为考虑的入基，aji都是小于0的。
+                    theta.push_back(delta[i]/a[cur_out_base][i]);//不可能会出现除以0的情况，因为考虑的入基，aji都是小于0的。
                     if(theta[i] < theta[smallest_in_base]){
                         //
                         smallest_in_base = i;//更新最小的theta，准备入基。
@@ -97,6 +120,9 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
                         smallest_in_base = i;
                         base_in_history[i]++;
                     }
+                }
+                else{// if not taken
+                    theta.push_back(-1);
                 }
             }//选定了入基变量，此时可以换基了。
             //换基
@@ -132,27 +158,4 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
     return result;
 }
 
-void row_transformation(vector< vector<double> > a,vector<double> b,vector<double> delta, vector<int> base, int m,int n){//此函数目标是将一个标准型函数，以及给定的基，进行行变换，得到部分为01矩阵的A。
-    for(int k=0;k<m;k++){
-        vector <double> transfer;
-        for(int j=0;j<m;j++){
-            transfer[j] = a[j][base[k]]/a[k][base[k]];
-        }
-        for(int j=0;j<m;j++){
-            for(int i=0;i<n;i++){
-                if(j == k){
-                    a[k][i] = a[k][i]/a[k][base[k]];
-                }
-                else{
-                    a[j][i] = a[j][i]-a[k][i]*transfer[j];
-                }
-            }
-            if(j == k)b[j] = b[j]/a[k][base[k]];
-            else b[j] = b[j]-b[k]*transfer[j];
-        }//修改所有行列
-        for(int i = 0; i < n;i++){
-                delta[i] = delta[i] - a[k][i]*delta[base[k]]/a[k][base[k]];
-        }//修改delta
-    }
-}
 
