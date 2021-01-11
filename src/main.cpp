@@ -63,7 +63,7 @@ int main(void)
 	double z;
 	vector<double> realx;
 	vector<double> finx;
-	double finopt=-INFINITY;
+	double finopt=-INFINITY; // min or max?
 	vector<int> finE;
 	vector<double> x;
 	double opt;
@@ -111,6 +111,7 @@ int main(void)
 	int artVarNum=0; // number of artificial variables
 	vector<int>::iterator dnth;
 	vector< vector<double> >::iterator anth;
+	vector<int> baseMap;
 	for(j=0; j<d.size(); j++)
 	{
 		if(d[j]==1&&d[j]==-1)
@@ -119,6 +120,7 @@ int main(void)
 		}
 		else
 		{
+			baseMap.insert(baseMap.begin(), j);
 			d.insert(d.begin(), e[j]);
 			dnth = d.begin() + j+1;
 			d.erase(dnth);
@@ -128,7 +130,7 @@ int main(void)
 		}
 	}
 
-
+	//TODO: choose the right base
 
 
 
@@ -218,6 +220,11 @@ int main(void)
 		{
 			for(i=0; i<A[j].size(); i++)
 			{
+				if(A[j][j]==0)
+				{
+					printf("ZERO PIVOT!");
+					exit(-1);
+				}
 				A[j][i]/=A[j][j];
 			}
 			for(i=0; i<m; i++)
@@ -296,6 +303,18 @@ int main(void)
 				realx.push_back(finx[i]*finE[i]);
 			}
 			t=n-1;
+			for(i=0; i<n; i++)
+			{
+				for(j=0; j<artVarNum; j++)
+				{
+					if(baseMap[j]==i)
+					{
+						realxnth=realx.begin()+i;
+						realx.insert(realxnth, finx[j]*finE[j]);
+					}
+				}
+			}
+			/*
 			for(i=0; i<artVarNum; i++)
 			{
 				while(t>=0&&d[t]!=0)//n=d.size()
@@ -309,6 +328,7 @@ int main(void)
 					t--;
 				}
 			}
+			*/
 			//i==artVarNum, t==-1/last d[i]
 			cout<<"Solution:"<<endl;
 			cout<<"Objective Function Optimal: "<<z<<endl;
