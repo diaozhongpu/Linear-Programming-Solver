@@ -49,7 +49,6 @@ void row_transformation(vector< vector<double> > a,vector<double> b,vector<doubl
  * 如果还是出现死循环，策略：当他入基次数特别多的时候，输出一下每次的矩阵，以及对应theta，并且使程序停下来。（暂未实现）
 */
 double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<double> &x){
-    return 0;
     //c有n个，但是a一行有n+1列。
     int n = c.size();
     int m = a.size();

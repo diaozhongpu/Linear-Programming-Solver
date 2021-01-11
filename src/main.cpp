@@ -106,11 +106,11 @@ int main(void)
 		e.push_back(itmp);
 	}
 
-	MatrixPrint(a);
-	VectorPrint(b);
-	VectorPrint(c);
-	VectorPrintI(d);
-	VectorPrintI(e);
+    cout<<"a:"; MatrixPrint(a);
+    cout<<"b:"; VectorPrint(b);
+    cout<<"c:"; VectorPrint(c);
+    cout<<"d:"; VectorPrintI(d);
+    cout<<"e:"; VectorPrintI(e);
 
 
 
@@ -153,19 +153,16 @@ int main(void)
 			xInR.push_back(i);
 		}
 	}
-	VectorPrintI(xInR);
+    cout<<"xInR:"; VectorPrintI(xInR);
 	vector< vector<double> > A;
 	vector<double> C;
 	vector<int> E;
-	VectorPrintI(e);
 	if(xInR.size()==0)
 	{
 		// change x in R into 2 seperate x>=0 and x<=0
 		// change e
 		E=e;//copy
 
-		//printf("[%d]:", iXInR);
-		VectorPrintI(E);
 
 		// add artificial variables +-a.r.; not for == 
 		C=c;
@@ -178,6 +175,7 @@ int main(void)
 			{
 				vdtmp.push_back(0);
 			}
+            vdtmp.push_back(b[j]);
 			A.push_back(vdtmp);
 		}
 
@@ -196,10 +194,11 @@ int main(void)
 					vdtmp.push_back(0);
 				}
 			}
+            vdtmp.push_back(b[j]);
 			A.push_back(vdtmp);
 
 			C.push_back(0);
-			E.push_back(d[j]);
+            E.push_back(-d[j]); //!!
 		}
 
 		// 行变换==为基
@@ -254,8 +253,8 @@ int main(void)
             finx.push_back(-1);
         }
         printf("Single");
-        MatrixPrint(A);
-        VectorPrint(C);
+        cout<<"A:"; MatrixPrint(A);
+        cout<<"C:"; VectorPrint(C);
 		finopt=dual_simplex_method(A, C, finx);
 
 		finE=E;
@@ -287,15 +286,12 @@ int main(void)
 			}
 
 
-			//printf("[%d]:", iXInR);
-			VectorPrintI(E);
-
 
 			// add artificial variables +-a.r.; not for == 
 
 			C=c;
 
-
+            A.clear();
 			for(j=0; j<m-artVarNum; j++)
 			{
 				vdtmp.clear();
@@ -304,6 +300,7 @@ int main(void)
 				{
 					vdtmp.push_back(0);
 				}
+                vdtmp.push_back(b[j]);
 				A.push_back(vdtmp);
 			}
 
@@ -322,10 +319,11 @@ int main(void)
 						vdtmp.push_back(0);
 					}
 				}
+                vdtmp.push_back(b[j]);
 				A.push_back(vdtmp);
 
 				C.push_back(0);
-				E.push_back(d[j]);
+				E.push_back(-d[j]); //!!
 			}
 
 			// 行变换==为基
@@ -382,9 +380,9 @@ int main(void)
                 x.push_back(-1);
             }
             printf("Multi");
-            MatrixPrint(A);
-            VectorPrint(C);
-			opt=dual_simplex_method(A, C, x);
+            cout<<"A:"; MatrixPrint(A);
+            cout<<"C:"; VectorPrint(C);
+            opt=dual_simplex_method(A, C, x);
 			
 			if(opt>finopt)//update optimal if has x in R
 			{
@@ -445,7 +443,7 @@ int main(void)
 			//i==artVarNum, t==-1/last d[i]
 			cout<<"Solution:"<<endl;
 			cout<<"Objective Function Optimal: "<<finopt<<endl;
-			cout<<"Variable Values"<<endl;
+			cout<<"Variable Values: "<<endl;
 			VectorPrint(realx);
 			cout<<endl;
 			break;
