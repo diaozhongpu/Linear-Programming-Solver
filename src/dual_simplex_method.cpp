@@ -4,12 +4,9 @@
 
 using namespace std;
 
-double dual_simplex_method();
+//double dual_simplex_method();
 void row_transformation(vector< vector<double> > a,vector<double> b,vector<double> delta, vector<int> base, int m,int n);
-int main(){
-    
-    return 0;
-}
+
 
 /*
 

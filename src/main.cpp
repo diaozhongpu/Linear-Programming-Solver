@@ -11,6 +11,8 @@
 #include <string>
 #include <cmath>
 
+#include "dual_simplex_method.cpp"
+
 using namespace std;
 
 void VectorPrintI(vector<int> path)
@@ -40,7 +42,7 @@ void MatrixPrint(vector< vector<double> > a)
 		cout<<"  ";
 		VectorPrint(a[j]);
 	}
-	cout<<"]";
+	cout<<"]"<<endl;
 }
 
 
@@ -105,6 +107,13 @@ int main(void)
 		e.push_back(itmp);
 	}
 
+	MatrixPrint(a);
+	VectorPrint(b);
+	VectorPrint(c);
+	VectorPrintI(d);
+	VectorPrintI(e);
+
+
 
 	// 不考虑超定问题
 	// 将等式放到最前面
@@ -151,139 +160,253 @@ int main(void)
 	vector<int> E;
 	VectorPrintI(e);
 	int firstAnswer=1;
-	for(iXInR=0; iXInR<(2<<(xInR.size())/2); iXInR++)
+	if(xInR.size()==0)
 	{
 		// change x in R into 2 seperate x>=0 and x<=0
-		// change e
-		E=e;//copy
-		if(xInR.size()>=1)
-		{
-			for(j=0; j<xInR.size(); j++)
+			// change e
+			E=e;//copy
+
+			//printf("[%d]:", iXInR);
+			VectorPrintI(E);
+
+
+			// add artificial variables +-a.r.; not for == 
+
+			C=c;
+
+			for(j=0; j<m-artVarNum; j++)
 			{
-				if((2*iXInR/(2<<j))%2==1)
-				{
-					//printf("j=%d, iXInR=%d, (2<<j)/2=%d, E[%d]=1\n", j, iXInR, (2<<j)/2, xInR[j]);
-					E[xInR[j]]=1;
-				}
-				else
-				{
-					//printf("j=%d, iXInR=%d, (2<<j)/2=%d, E[%d]=-1\n", j, iXInR, (2<<j)/2, xInR[j]);
-					E[xInR[j]]=-1;
-				}
-			}
-		}
-
-
-		//printf("[%d]:", iXInR);
-		VectorPrintI(E);
-
-
-		// add artificial variables +-a.r.; not for == 
-
-		C=c;
-
-
-		for(j=0; j<m-artVarNum; j++)
-		{
-			vdtmp.clear();
-			vdtmp=a[j];
-			for(i=0; i<artVarNum; i++)
-			{
-				vdtmp.push_back(0);
-			}
-			A.push_back(vdtmp);
-		}
-
-		for(j=m-artVarNum; j<m; j++)
-		{
-			vdtmp.clear();
-			vdtmp=a[j];
-			for(i=0; i<artVarNum; i++) // a
-			{
-				if(i==(j-(m-artVarNum)))
-				{
-					vdtmp.push_back(1);
-				}
-				else
+				vdtmp.clear();
+				vdtmp=a[j];
+				for(i=0; i<artVarNum; i++)
 				{
 					vdtmp.push_back(0);
 				}
+				A.push_back(vdtmp);
 			}
-			A.push_back(vdtmp);
 
-			C.push_back(0);
-			E.push_back(d[j]);
-		}
-
-		// 行变换==为基
-		for(j=m-artVarNum-1; j>=0; j--)
-		{
-			for(i=0; i<A[j].size(); i++)
+			for(j=m-artVarNum; j<m; j++)
 			{
-				if(A[j][j]==0)
+				vdtmp.clear();
+				vdtmp=a[j];
+				for(i=0; i<artVarNum; i++) // a
 				{
-					printf("ZERO PIVOT!");
-					exit(-1);
-				}
-				A[j][i]/=A[j][j];
-			}
-			for(i=0; i<m; i++)
-			{
-				if(i!=j)
-				{
-					for(t=0; t<A[i].size(); t++)
+					if(i==(j-(m-artVarNum)))
 					{
-						A[i][t]=A[i][t]-A[j][t]*A[i][j];//A[j][j]==1
+						vdtmp.push_back(1);
+					}
+					else
+					{
+						vdtmp.push_back(0);
+					}
+				}
+				A.push_back(vdtmp);
+
+				C.push_back(0);
+				E.push_back(d[j]);
+			}
+
+			// 行变换==为基
+			for(j=m-artVarNum-1; j>=0; j--)
+			{
+				for(i=0; i<A[j].size(); i++)
+				{
+					if(A[j][j]==0)
+					{
+						printf("ZERO PIVOT!");
+						exit(-1);
+					}
+					A[j][i]/=A[j][j];
+				}
+				for(i=0; i<m; i++)
+				{
+					if(i!=j)
+					{
+						for(t=0; t<A[i].size(); t++)
+						{
+							A[i][t]=A[i][t]-A[j][t]*A[i][j];//A[j][j]==1
+						}
 					}
 				}
 			}
-		}
 
-		// change variable sign
-		for(i=0; i<E.size(); i++)//n+artVarNum
-		{
-			if(E[i]==-1)
+			// change variable sign
+			for(i=0; i<E.size(); i++)//n+artVarNum
 			{
-				for(j=0; j<m; j++)
+				if(E[i]==-1)
 				{
-					A[j][i]=-A[j][i];
+					for(j=0; j<m; j++)
+					{
+						A[j][i]=-A[j][i];
+					}
+					C[i]=-C[i];
 				}
-				C[i]=-C[i];
 			}
-		}
 
 
 
-		// Call Algorithms
+			// Call Algorithms
 
 
-		/* M constraints, N variables (with artificial, etc)
-		 * A (M)*(N+1) matrix, first N column is variable, of which last M is selected as base variable
-		 * C (N) objective function co
-		 *
-		 */
-		//opt=simplex(A, C, &nx);
-		//return x and opt
-		opt=123;
-		x=C;
+			/* M constraints, N variables (with artificial, etc)
+			 * A (M)*(N+1) matrix, first N column is variable, of which last M is selected as base variable
+			 * C (N) objective function co
+			 *
+			 */
+			
+			opt=dual_simplex_method(A, C, x);
+			
+			//return x and opt
+			// opt=123;
+			// x=C;
 
-		if(xInR.size()==0)
-		{
-			finopt=opt;
-			finx=x;
-			finE=E;
-			break;
-		}
-
-		if(opt>finopt)//update optimal if has x in R
-		{
-			finopt=opt;
-			finx=x;
-			finE=E;
-		}
-
+			if(xInR.size()==0)
+			{
+				finopt=opt;
+				finx=x;
+				finE=E;
+			}
 
 	}
+	else
+	{
+		for(iXInR=0; iXInR<(2<<(xInR.size())/2); iXInR++)
+		{
+			// change x in R into 2 seperate x>=0 and x<=0
+			// change e
+			E=e;//copy
+			if(xInR.size()>=1)
+			{
+				for(j=0; j<xInR.size(); j++)
+				{
+					if((2*iXInR/(2<<j))%2==1)
+					{
+						//printf("j=%d, iXInR=%d, (2<<j)/2=%d, E[%d]=1\n", j, iXInR, (2<<j)/2, xInR[j]);
+						E[xInR[j]]=1;
+					}
+					else
+					{
+						//printf("j=%d, iXInR=%d, (2<<j)/2=%d, E[%d]=-1\n", j, iXInR, (2<<j)/2, xInR[j]);
+						E[xInR[j]]=-1;
+					}
+				}
+			}
+
+
+			//printf("[%d]:", iXInR);
+			VectorPrintI(E);
+
+
+			// add artificial variables +-a.r.; not for == 
+
+			C=c;
+
+
+			for(j=0; j<m-artVarNum; j++)
+			{
+				vdtmp.clear();
+				vdtmp=a[j];
+				for(i=0; i<artVarNum; i++)
+				{
+					vdtmp.push_back(0);
+				}
+				A.push_back(vdtmp);
+			}
+
+			for(j=m-artVarNum; j<m; j++)
+			{
+				vdtmp.clear();
+				vdtmp=a[j];
+				for(i=0; i<artVarNum; i++) // a
+				{
+					if(i==(j-(m-artVarNum)))
+					{
+						vdtmp.push_back(1);
+					}
+					else
+					{
+						vdtmp.push_back(0);
+					}
+				}
+				A.push_back(vdtmp);
+
+				C.push_back(0);
+				E.push_back(d[j]);
+			}
+
+			// 行变换==为基
+			for(j=m-artVarNum-1; j>=0; j--)
+			{
+				for(i=0; i<A[j].size(); i++)
+				{
+					if(A[j][j]==0)
+					{
+						printf("ZERO PIVOT!");
+						exit(-1);
+					}
+					A[j][i]/=A[j][j];
+				}
+				for(i=0; i<m; i++)
+				{
+					if(i!=j)
+					{
+						for(t=0; t<A[i].size(); t++)
+						{
+							A[i][t]=A[i][t]-A[j][t]*A[i][j];//A[j][j]==1
+						}
+					}
+				}
+			}
+
+			// change variable sign
+			for(i=0; i<E.size(); i++)//n+artVarNum
+			{
+				if(E[i]==-1)
+				{
+					for(j=0; j<m; j++)
+					{
+						A[j][i]=-A[j][i];
+					}
+					C[i]=-C[i];
+				}
+			}
+
+
+
+			// Call Algorithms
+
+
+			/* M constraints, N variables (with artificial, etc)
+			 * A (M)*(N+1) matrix, first N column is variable, of which last M is selected as base variable
+			 * C (N) objective function co
+			 *
+			 */
+			printf("STARTING DUAL");
+			opt=dual_simplex_method(A, C, x);
+			printf("ENDING DUAL");
+			//return x and opt
+			// opt=123;
+			// x=C;
+
+			if(xInR.size()==0)
+			{
+				finopt=opt;
+				finx=x;
+				finE=E;
+				break;
+			}
+
+			if(opt>finopt)//update optimal if has x in R
+			{
+				finopt=opt;
+				finx=x;
+				finE=E;
+			}
+
+
+		}
+	}
+	
 
 	// Output Display
 	// merge opt
