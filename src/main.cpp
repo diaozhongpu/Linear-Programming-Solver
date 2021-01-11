@@ -106,23 +106,23 @@ int main(void)
 		e.push_back(itmp);
 	}
 
-	MatrixPrint(a);
-	VectorPrint(b);
-	VectorPrint(c);
-	VectorPrintI(d);
-	VectorPrintI(e);
+    cout<<"a:"; MatrixPrint(a);
+    cout<<"b:"; VectorPrint(b);
+    cout<<"c:"; VectorPrint(c);
+    cout<<"d:"; VectorPrintI(d);
+    cout<<"e:"; VectorPrintI(e);
 
 
 
-	// 不考虑超定问题
-	// 将等式放到最前面
+	// 丝考虑超定问题
+	// 将等弝放到最剝面
 	int artVarNum=0; // number of artificial variables
 	vector<int>::iterator dnth;
 	vector< vector<double> >::iterator anth;
 	vector<int> baseMap;
 	for(j=0; j<(int)d.size(); j++)
 	{
-		if(d[j]==1&&d[j]==-1)
+		if(d[j]==1||d[j]==-1)
 		{
 			artVarNum++;
 		}
@@ -153,19 +153,21 @@ int main(void)
 			xInR.push_back(i);
 		}
 	}
-	VectorPrintI(xInR);
+    cout<<"xInR:"; VectorPrintI(xInR);
 	vector< vector<double> > A;
 	vector<double> C;
 	vector<int> E;
+<<<<<<< HEAD
 	VectorPrintI(e);
 	if((int)xInR.size()==0)
+=======
+	if(xInR.size()==0)
+>>>>>>> refs/remotes/main/main
 	{
 		// change x in R into 2 seperate x>=0 and x<=0
 		// change e
 		E=e;//copy
 
-		//printf("[%d]:", iXInR);
-		VectorPrintI(E);
 
 		// add artificial variables +-a.r.; not for == 
 		C=c;
@@ -178,6 +180,7 @@ int main(void)
 			{
 				vdtmp.push_back(0);
 			}
+            vdtmp.push_back(b[j]);
 			A.push_back(vdtmp);
 		}
 
@@ -196,13 +199,14 @@ int main(void)
 					vdtmp.push_back(0);
 				}
 			}
+            vdtmp.push_back(b[j]);
 			A.push_back(vdtmp);
 
 			C.push_back(0);
-			E.push_back(d[j]);
+            E.push_back(-d[j]); //!!
 		}
 
-		// 行变�?==为基
+		// 行坘�?==为基
 		for(j=m-artVarNum-1; j>=0; j--)
 		{
 			for(i=0; i<(int)A[j].size(); i++)
@@ -253,6 +257,9 @@ int main(void)
         {
             finx.push_back(-1);
         }
+        printf("Single");
+        cout<<"A:"; MatrixPrint(A);
+        cout<<"C:"; VectorPrint(C);
 		finopt=dual_simplex_method(A, C, finx);
 
 		finE=E;
@@ -284,15 +291,12 @@ int main(void)
 			}
 
 
-			//printf("[%d]:", iXInR);
-			VectorPrintI(E);
-
 
 			// add artificial variables +-a.r.; not for == 
 
 			C=c;
 
-
+            A.clear();
 			for(j=0; j<m-artVarNum; j++)
 			{
 				vdtmp.clear();
@@ -301,7 +305,7 @@ int main(void)
 				{
 					vdtmp.push_back(0);
 				}
-				vdtmp.push_back(b[j]);
+                vdtmp.push_back(b[j]);
 				A.push_back(vdtmp);
 			}
 
@@ -320,13 +324,14 @@ int main(void)
 						vdtmp.push_back(0);
 					}
 				}
+                vdtmp.push_back(b[j]);
 				A.push_back(vdtmp);
 
 				C.push_back(0);
-				E.push_back(d[j]);
+				E.push_back(-d[j]); //!!
 			}
 
-			// 行变�?==为基
+			// 行坘�?==为基
 			for(j=m-artVarNum-1; j>=0; j--)
 			{
 				for(i=0; i<(int)A[j].size(); i++)
@@ -379,7 +384,10 @@ int main(void)
             {
                 x.push_back(-1);
             }
-			opt=dual_simplex_method(A, C, x);
+            printf("Multi");
+            cout<<"A:"; MatrixPrint(A);
+            cout<<"C:"; VectorPrint(C);
+            opt=dual_simplex_method(A, C, x);
 			
 			if(opt>finopt)//update optimal if has x in R
 			{
@@ -397,7 +405,7 @@ int main(void)
 	// merge opt
 	// fix variable sign
 	vector<double>::iterator realxnth;
-	switch(k)
+	switch(1)//TODO:k
 	{
 		case -1: 
 			cout<<"No Solution"<<endl;
@@ -406,14 +414,14 @@ int main(void)
 			cout<<"Infinite Solution"<<endl;
 			break;
 		case 1:
-			for(i=artVarNum; i<n; i++)
+			for(i=n-artVarNum; i<n; i++)
 			{
 				realx.push_back(finx[i]*finE[i]);
 			}
 			t=n-1;
 			for(i=0; i<n; i++)
 			{
-				for(j=0; j<artVarNum; j++)
+				for(j=0; j<m-artVarNum; j++)
 				{
 					if(baseMap[j]==i)
 					{
@@ -440,7 +448,7 @@ int main(void)
 			//i==artVarNum, t==-1/last d[i]
 			cout<<"Solution:"<<endl;
 			cout<<"Objective Function Optimal: "<<finopt<<endl;
-			cout<<"Variable Values"<<endl;
+			cout<<"Variable Values: "<<endl;
 			VectorPrint(realx);
 			cout<<endl;
 			break;
