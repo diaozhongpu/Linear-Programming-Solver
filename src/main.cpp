@@ -302,7 +302,6 @@ int main(void)
 					vdtmp.push_back(0);
 				}
 				vdtmp.push_back(b[j]);
-				cout<<"fuck you"<<endl;
 				A.push_back(vdtmp);
 			}
 
