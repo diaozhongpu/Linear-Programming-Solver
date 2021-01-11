@@ -6,11 +6,6 @@ using namespace std;
 
 
 
-
-//此函数目标是将一个标准型函数，以及给定的基，进行行变换，得到部分为01矩阵的A。
-void row_transformation(vector< vector<double> > a,vector<double> b,vector<double> delta, vector<int> base, int m,int n);
-
-
 /**
  * 首先对于给出的矩阵，得到其标准型，即增加若干列，使得不等式变为等式。
  * 之后再将其变成一个有m个初始基的矩阵，即，使得某些列只有一个1，其余全是0.

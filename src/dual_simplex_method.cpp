@@ -6,34 +6,6 @@
 using namespace std;
 
 
-void row_transformation(vector< vector<double> > a,vector<double> b,vector<double> delta, vector<int> base, int m,int n)
-{ //此函数目标是将一个标准型函数，以及给定的基，进行行变换，得到部分为01矩阵的A。
-    for(int k=0;k<m;k++){
-        vector <double> transfer;
-        for(int j=0;j<m;j++){
-            transfer.push_back(a[j][base[k]]/a[k][base[k]]);
-        }
-        for(int j=0;j<m;j++){
-            for(int i=0;i<n;i++){
-                if(j == k){
-                    a[k][i] = a[k][i]/a[k][base[k]];
-                }
-                else{
-                    a[j][i] = a[j][i]-a[k][i]*transfer[j];
-                }
-            }
-            if(j == k)b[j] = b[j]/a[k][base[k]];
-            else b[j] = b[j]-b[k]*transfer[j];
-        }//修改所有行列
-        for(int i = 0; i < n;i++){
-                delta[i] = delta[i] - a[k][i]*delta[base[k]]/a[k][base[k]];
-        }//修改delta
-    }
-}
-
-/*
-
-*/
 
 
 /**
@@ -73,7 +45,27 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
         }
         cout<<endl;
     }
-    row_transformation(a, b, delta, base, m, n);
+    for(int k=0;k<m;k++){
+        vector <double> transfer;
+        for(int j=0;j<m;j++){
+            transfer.push_back(a[j][base[k]]/a[k][base[k]]);
+        }
+        for(int j=0;j<m;j++){
+            for(int i=0;i<n;i++){
+                if(j == k){
+                    a[k][i] = a[k][i]/a[k][base[k]];
+                }
+                else{
+                    a[j][i] = a[j][i]-a[k][i]*transfer[j];
+                }
+            }
+            if(j == k)b[j] = b[j]/a[k][base[k]];
+            else b[j] = b[j]-b[k]*transfer[j];
+        }//修改所有行列
+        for(int i = 0; i < n;i++){
+            delta[i] = delta[i] - a[k][i]*delta[base[k]]/a[k][base[k]];
+        }//修改delta
+    }
     cout<<"A"<<endl;
     for(int j =0;j<m;j++){
         for(int i =0;i<n;i++){
@@ -87,7 +79,7 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
         cout<<"检验数 : "<<endl;
         for(int i=0;i<n;i++){
             if(delta[i] > 0){
-                cout<<"对偶问题不可行"<<endl;
+                cout<<"dual not works"<<endl;
                 return -0xffffffff;//对偶问题不可行
             }
             else{
@@ -102,7 +94,7 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
             }
         }
         if(num == m){
-            cout<<"原始问题可行，得到最优解"<<endl;
+            cout<<"simplex works"<<endl;
             for(int j=0;j<m;j++){
                 result += c[base[j]]*b[base[j]];//当前的x值乘以原来的c值得到结果。
             }
@@ -129,22 +121,23 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
                         //
                         smallest_in_base = i;//更新最小的theta，准备入基。
                         base_in_history[i]++;
-                        if(base_in_history[i] >= 100){
-                            cout<<"too many times,break"<<endl;
-                            break;
-                        }
+                        // if(base_in_history[i] >= 100){
+                        //     cout<<"too many times,break"<<endl;
+                        //     break;
+                        // }
                     }
                     else if(theta[i] == theta[smallest_in_base]&&base_in_history[i] < base_in_history[smallest_in_base]){
                         smallest_in_base = i;
                         base_in_history[i]++;
-                        if(base_in_history[i] >= 100){
-                            cout<<"too many times,break"<<endl;
-                            break;
-                        }
+                        // if(base_in_history[i] >= 100){
+                        //     cout<<"too many times,break"<<endl;
+                        //     break;
+                        // }
                     }
                 }
                 else{// if not taken
-                    theta.push_back(-1);
+                    cout<<"cannot let the simplex works"<<endl;
+                    return 0;
                 }
             }//选定了入基变量，此时可以换基了。
             //换基

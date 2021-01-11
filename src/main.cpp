@@ -157,12 +157,7 @@ int main(void)
 	vector< vector<double> > A;
 	vector<double> C;
 	vector<int> E;
-<<<<<<< HEAD
-	VectorPrintI(e);
 	if((int)xInR.size()==0)
-=======
-	if(xInR.size()==0)
->>>>>>> refs/remotes/main/main
 	{
 		// change x in R into 2 seperate x>=0 and x<=0
 		// change e
