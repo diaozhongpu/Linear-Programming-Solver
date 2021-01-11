@@ -268,7 +268,7 @@ int main(void)
 			break;
 		}
 
-		if(opt>finopt)
+		if(opt>finopt)//update optimal if has x in R
 		{
 			finopt=opt;
 			finx=x;
@@ -281,6 +281,7 @@ int main(void)
 	// Output Display
 	// merge opt
 	// fix variable sign
+	vector<double>::iterator realxnth;
 	switch(k)
 	{
 		case -1: 
@@ -290,10 +291,25 @@ int main(void)
 			cout<<"Infinite Solution"<<endl;
 			break;
 		case 1:
-			for(i=0; i<n; i++)
+			for(i=artVarNum; i<n; i++)
 			{
 				realx.push_back(finx[i]*finE[i]);
 			}
+			t=n-1;
+			for(i=0; i<artVarNum; i++)
+			{
+				while(t>=0&&d[t]!=0)//n=d.size()
+				{
+					t--;
+				}
+				if(t>=0)
+				{
+					realxnth=realx.begin()+t;
+					realx.insert(realxnth, finx[i]*finE[i]);
+					t--;
+				}
+			}
+			//i==artVarNum, t==-1/last d[i]
 			cout<<"Solution:"<<endl;
 			cout<<"Objective Function Optimal: "<<z<<endl;
 			cout<<"Variable Values"<<endl;
