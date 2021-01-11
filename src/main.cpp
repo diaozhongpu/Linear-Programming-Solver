@@ -122,7 +122,7 @@ int main(void)
 	vector<int> baseMap;
 	for(j=0; j<d.size(); j++)
 	{
-		if(d[j]==1&&d[j]==-1)
+		if(d[j]==1||d[j]==-1)
 		{
 			artVarNum++;
 		}
@@ -253,6 +253,9 @@ int main(void)
         {
             finx.push_back(-1);
         }
+        printf("Single");
+        MatrixPrint(A);
+        VectorPrint(C);
 		finopt=dual_simplex_method(A, C, finx);
 
 		finE=E;
@@ -378,6 +381,9 @@ int main(void)
             {
                 x.push_back(-1);
             }
+            printf("Multi");
+            MatrixPrint(A);
+            VectorPrint(C);
 			opt=dual_simplex_method(A, C, x);
 			
 			if(opt>finopt)//update optimal if has x in R
@@ -396,7 +402,7 @@ int main(void)
 	// merge opt
 	// fix variable sign
 	vector<double>::iterator realxnth;
-	switch(k)
+	switch(1)//TODO:k
 	{
 		case -1: 
 			cout<<"No Solution"<<endl;
@@ -405,14 +411,14 @@ int main(void)
 			cout<<"Infinite Solution"<<endl;
 			break;
 		case 1:
-			for(i=artVarNum; i<n; i++)
+			for(i=n-artVarNum; i<n; i++)
 			{
 				realx.push_back(finx[i]*finE[i]);
 			}
 			t=n-1;
 			for(i=0; i<n; i++)
 			{
-				for(j=0; j<artVarNum; j++)
+				for(j=0; j<m-artVarNum; j++)
 				{
 					if(baseMap[j]==i)
 					{
