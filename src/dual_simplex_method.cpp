@@ -2,11 +2,7 @@
 #include <vector>
 // #include <math>
 
-
 using namespace std;
-
-
-
 
 /**
  * 首先对于给出的矩阵，得到其标准型，即增加若干列，使得不等式变为等式。
@@ -84,9 +80,9 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
             if(delta[i] > 0){
                 cout<<"dual not works"<<endl;
                 return 0;//对偶问题不可行
-                // return 0xffffffff;
             }
-        }cout<<"delta(updating) : "<<endl;
+        }
+        cout<<"delta(updating) : "<<endl;
         for(int i=0;i<n;i++){
             cout<<delta[i]<<" "<<endl;
         }
