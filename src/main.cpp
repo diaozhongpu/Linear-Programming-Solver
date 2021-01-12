@@ -216,7 +216,40 @@ int main(void)
 				if(A[m-artVarNum-j][nE-artVarNum-j]==0)
 				{
 					printf("ZERO PIVOT!");
-					exit(-1);
+                    int fixed=0;
+                    // try to find the right base
+                    for(t=0; t<m-artVarNum; t++)
+                    {
+                        
+                        if(A[t][nE-artVarNum-j]!=0)
+                        {
+                            //swap t and m-artVarNum-j
+                            if(t<m-artVarNum-j)
+                            {
+                                anth=A.begin()+t;
+                                A.insert(anth, A[m-artVarNum-j]);
+                                anth=A.begin()+m-artVarNum-j+1;
+                                A.insert(anth, A[t+1]);
+                                anth=A.begin()+m-artVarNum-j+2;
+                                A.erase(anth);
+                                anth=A.begin()+t+1;
+                                A.erase(anth);
+                                fixed=1;//fixed
+                                break;
+                            }
+                            
+                        }
+                    }
+                    if(fixed)
+                    {
+                        printf("FIND NONZERO PIVOT!");
+                        break;
+                    }
+                    if(t>=m-artVarNum)
+                    {
+                        printf("FAILED TO FIND ZERO PIVOT!");
+                        exit(1);
+                    }
 				}
 				A[m-artVarNum-j][i]/=A[m-artVarNum-j][nE-artVarNum-j];
 			}
@@ -342,7 +375,32 @@ int main(void)
                     if(A[m-artVarNum-j][nE-artVarNum-j]==0)
                     {
                         printf("ZERO PIVOT!");
-                        exit(-1);
+                        // try to find the right base
+                        for(t=0; t<m-artVarNum; t++)
+                        {
+                            if(A[t][nE-artVarNum-j]!=0)
+                            {
+                                //swap t and m-artVarNum-j
+                                if(t<m-artVarNum-j)
+                                {
+                                    anth=A.begin()+t;
+                                    A.insert(anth, A[m-artVarNum-j]);
+                                    anth=A.begin()+m-artVarNum-j+1;
+                                    A.insert(anth, A[t]);
+                                    anth=A.begin()+m-artVarNum-j+2;
+                                    A.erase(anth);
+                                    anth=A.begin()+t+1;
+                                    A.erase(anth);
+                                    break;//fixed
+                                }
+                                
+                            }
+                        }
+                        if(t>=m-artVarNum)
+                        {
+                            printf("FAILED TO FIND ZERO PIVOT!");
+                            exit(1);
+                        }
                     }
                     A[m-artVarNum-j][i]/=A[m-artVarNum-j][nE-artVarNum-j];
                 }
