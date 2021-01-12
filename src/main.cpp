@@ -391,6 +391,9 @@ int main(void)
             if(finopt==INFINITY)
             {
                 k=dual_simplex_method(A, C, x, opt);
+                finopt=opt;
+                finx=x;
+                finE=E;
             }
             else
             {
@@ -398,16 +401,18 @@ int main(void)
                 if(tempk==1)
                 {
                     k=1;
+                    
+                    if(opt<finopt)//update optimal if has x in R
+                    {
+                        finopt=opt;
+                        finx=x;
+                        finE=E;
+                    }
                 }
             }
             
 			
-			if(opt<finopt)//update optimal if has x in R
-			{
-				finopt=opt;
-				finx=x;
-				finE=E;
-			}
+			
 
 
 		}
@@ -427,7 +432,8 @@ int main(void)
 			cout<<"Infinite Solution"<<endl;
 			break;
 		case 1:
-			for(i=n-artVarNum; i<n; i++)
+			//for(i=n-artVarNum; i<n; i++)
+            for(i=0; i<n-(m-artVarNum); i++)
 			{
 				realx.push_back(finx[i]*finE[i]);
 			}
