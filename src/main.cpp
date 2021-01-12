@@ -375,9 +375,11 @@ int main(void)
                     if(A[m-artVarNum-j][nE-artVarNum-j]==0)
                     {
                         printf("ZERO PIVOT!");
+                        int fixed=0;
                         // try to find the right base
                         for(t=0; t<m-artVarNum; t++)
                         {
+                            
                             if(A[t][nE-artVarNum-j]!=0)
                             {
                                 //swap t and m-artVarNum-j
@@ -386,15 +388,21 @@ int main(void)
                                     anth=A.begin()+t;
                                     A.insert(anth, A[m-artVarNum-j]);
                                     anth=A.begin()+m-artVarNum-j+1;
-                                    A.insert(anth, A[t]);
+                                    A.insert(anth, A[t+1]);
                                     anth=A.begin()+m-artVarNum-j+2;
                                     A.erase(anth);
                                     anth=A.begin()+t+1;
                                     A.erase(anth);
-                                    break;//fixed
+                                    fixed=1;//fixed
+                                    break;
                                 }
                                 
                             }
+                        }
+                        if(fixed)
+                        {
+                            printf("FIND NONZERO PIVOT!");
+                            break;
                         }
                         if(t>=m-artVarNum)
                         {
