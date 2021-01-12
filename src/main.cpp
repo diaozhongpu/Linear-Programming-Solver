@@ -208,24 +208,25 @@ int main(void)
 		}
 
 		// 行坘�?==为基
-		for(j=m-artVarNum-1; j>=0; j--)
+        int nE=(int)E.size();
+		for(j=1; j<=m-artVarNum; j++)//m-artVarNum-1
 		{
 			for(i=0; i<(int)A[j].size(); i++)
 			{
-				if(A[j][j]==0)
+				if(A[m-artVarNum-j][nE-artVarNum-j]==0)
 				{
 					printf("ZERO PIVOT!");
 					exit(-1);
 				}
-				A[j][i]/=A[j][j];
+				A[m-artVarNum-j][i]/=A[m-artVarNum-j][nE-artVarNum-j];
 			}
 			for(i=0; i<m; i++)
 			{
-				if(i!=j)
+				if((m-i)!=j)
 				{
 					for(t=0; t<(int)A[i].size(); t++)
 					{
-						A[i][t]=A[i][t]-A[j][t]*A[i][j];//A[j][j]==1
+						A[i][t]=A[i][t]-A[m-artVarNum-j][t]*A[i][nE-artVarNum-j];//A[j][j]==1
 					}
 				}
 			}
@@ -333,28 +334,29 @@ int main(void)
 			}
 
 			// 行坘�?==为基
-			for(j=m-artVarNum-1; j>=0; j--)
-			{
-				for(i=0; i<(int)A[j].size(); i++)
-				{
-					if(A[j][j]==0)
-					{
-						printf("ZERO PIVOT!");
-						exit(-1);
-					}
-					A[j][i]/=A[j][j];
-				}
-				for(i=0; i<m; i++)
-				{
-					if(i!=j)
-					{
-						for(t=0; t<(int)A[i].size(); t++)
-						{
-							A[i][t]=A[i][t]-A[j][t]*A[i][j];//A[j][j]==1
-						}
-					}
-				}
-			}
+            int nE=(int)E.size();
+            for(j=1; j<=m-artVarNum; j++)//m-artVarNum-1
+            {
+                for(i=0; i<(int)A[j].size(); i++)
+                {
+                    if(A[m-artVarNum-j][nE-artVarNum-j]==0)
+                    {
+                        printf("ZERO PIVOT!");
+                        exit(-1);
+                    }
+                    A[m-artVarNum-j][i]/=A[m-artVarNum-j][nE-artVarNum-j];
+                }
+                for(i=0; i<m; i++)
+                {
+                    if((m-i)!=j)
+                    {
+                        for(t=0; t<(int)A[i].size(); t++)
+                        {
+                            A[i][t]=A[i][t]-A[m-artVarNum-j][t]*A[i][nE-artVarNum-j];//A[j][j]==1
+                        }
+                    }
+                }
+            }
 
 			// change variable sign
 			for(i=0; i<(int)E.size(); i++)//n+artVarNum
