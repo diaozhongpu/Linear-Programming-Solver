@@ -63,6 +63,7 @@ int main(void)
 	vector<int> e;
 
 	int k = 0;
+    int tempk = 0;
 	vector<double> realx;
 	vector<double> finx;
 	double finopt=INFINITY; // min or max?
@@ -387,7 +388,19 @@ int main(void)
             printf("Multi");
             cout<<"A:"; MatrixPrint(A);
             cout<<"C:"; VectorPrint(C);
-            k=dual_simplex_method(A, C, x, opt);
+            if(finopt==INFINITY)
+            {
+                k=dual_simplex_method(A, C, x, opt);
+            }
+            else
+            {
+                tempk=dual_simplex_method(A, C, x, opt);
+                if(tempk==1)
+                {
+                    k=1;
+                }
+            }
+            
 			
 			if(opt<finopt)//update optimal if has x in R
 			{

@@ -1,4 +1,4 @@
-﻿/*
+/*
 author:zzy
 说明：这个代码可以独立执行，要求如下：
 1.化为等式矩阵
@@ -25,6 +25,7 @@ b为约束等式右边数字
 #include "LP_Simplex Method.h"
 
 using namespace Eigen;
+using namespace std;
 
 double LP_Simplex_Method(std::vector< std::vector<double> > A, std::vector<double> C, std::vector<double>& X, double& value)
 {
