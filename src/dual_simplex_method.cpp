@@ -35,19 +35,12 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
     for(int j =0;j<m;j++){
         b.push_back(a[j][n]);
     }//从矩阵中得到b
-    cout<<"base"<<endl;
+    cout<<"base : "<<endl;
     for(int j =0;j<m;j++){
         base.push_back(n-m+j);
         cout<<base[j]<<" ";
     }//从矩阵中得到base
     cout<<endl;
-    cout<<"A ori"<<endl;
-    for(int j =0;j<m;j++){
-        for(int i =0;i<n;i++){
-            cout<< a[j][i] <<" ";
-        }
-        cout<<endl;
-    }
     for(int k=0;k<m;k++){
         vector <double> transfer;
         for(int j=0;j<m;j++){
@@ -71,14 +64,14 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
             a[k][i] = a[k][i]/line_transfer;
         }
     }
-    cout<<"A"<<endl;
+    cout<<"A : "<<endl;
     for(int j =0;j<m;j++){
         for(int i =0;i<n;i++){
             cout<< a[j][i] <<" ";
         }
         cout<<endl;
     }
-    cout<<"B"<<endl;
+    cout<<"B : "<<endl;
     for(int j =0;j<m;j++){
         cout<<b[j] <<" ";
     }
@@ -86,32 +79,32 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
     vector <int> base_in_history(n,0);//定义入基的历史个数，入基次数多的尽可能不入基。
     while(1){
         //判断对偶问题是否可行
-        cout<<"delta : "<<endl;
+        cout<<"looping"<<endl;
         for(int i=0;i<n;i++){
             if(delta[i] > 0){
                 cout<<"dual not works"<<endl;
                 return 0;//对偶问题不可行
                 // return 0xffffffff;
             }
-            else{
-                cout<<delta[i]<<" ";
-            }
+        }cout<<"delta(updating) : "<<endl;
+        for(int i=0;i<n;i++){
+            cout<<delta[i]<<" "<<endl;
         }
-        cout<<endl;
         int num = 0;
-        cout<<"b : "<<endl;
+        cout<<"b(updating) : "<<endl;
         for(int i = 0;i<m;i++){
             if(b[i] >= 0){
                 num++;
             }
-            cout<<b[i]<<" "<<endl;
+            cout<<b[i]<<" ";
         }
+        cout<<endl;
         if(num == m){
             cout<<"simplex works"<<endl;
             result = 0.0;
             for(int j=0;j<m;j++){
                 result += c[base[j]]*b[j];//当前的x值乘以原来的c值得到结果。
-                cout<<"c : "<<c[base[j]]<<" b : "<<b[j]<<endl;
+                cout<<"c"<<base[j]<<" : "<<c[base[j]]<<", x"<<base[j]<<" : "<<b[j]<<endl;
             }
             cout<<"result : " << result <<endl;
             break;
