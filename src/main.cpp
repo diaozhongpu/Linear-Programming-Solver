@@ -204,7 +204,7 @@ int main(void)
 			A.push_back(vdtmp);
 
 			C.push_back(0);
-            E.push_back(d[j]); //!!
+            E.push_back(-d[j]); //!!
 		}
 
 		// 行坘�?==为基
@@ -330,7 +330,7 @@ int main(void)
 				A.push_back(vdtmp);
 
 				C.push_back(0);
-				E.push_back(d[j]); //!!
+				E.push_back(-d[j]); //!!
 			}
 
 			// 行坘�?==为基
