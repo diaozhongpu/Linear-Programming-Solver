@@ -26,13 +26,13 @@ b为约束等式右边数字
 
 using namespace Eigen;
 
-double LP_Simplex_Method(std::vector< std::vector<double> > A, std::vector<double> C)
+double LP_Simplex_Method(std::vector< std::vector<double> > A, std::vector<double> C, std::vector<double>& X, double& value)
 {
 	cout<<"Simplex Method--------------"<<endl;
 	int m = A.size();
 	int	n = A[0].size()-1;
 	int tmp = C.size();
-	double ret;
+	int ret;
 	VectorXd b(tmp);
 	MatrixXd a(m + 1, n);
 	int i, j;
@@ -47,7 +47,7 @@ double LP_Simplex_Method(std::vector< std::vector<double> > A, std::vector<doubl
 	for (i = 0; i < tmp; i++) {
 		b(i) = double(C[i]);
 	}
-	ret = getopt(a, b);
+	ret = getopt(a, b, X ,value);
 	return ret;
 }
 
@@ -86,15 +86,17 @@ int main()
 	return 0;
 }*/
 
-double getopt(MatrixXd A, VectorXd b)
+double getopt(MatrixXd A, VectorXd b, std::vector<double>& X, double& value)
 {
 	MatrixXd Ab, An, Ab_;
 	MatrixXd tmp;
 	Matrixpair arr;
 	RowVectorXd c;
 	RowVectorXd Cb, Cn;
-	double value = 0;
+	int* ptr = (int*)malloc(sizeof(int)*A.cols());
+	int ret = 1;		//by default has soluytion
 	int i;
+	value = 0;		//initialize
 	RowVectorXd list = A.row(0);			//vector ,element i !=0 means A(:,i) is part of base Matrix
 	//std::cout << A.rows() << " " << b.size() << std::endl;
 	if (A.rows()!=(b.size()+1)) {			//check A.rows()==b.size()
@@ -113,7 +115,7 @@ double getopt(MatrixXd A, VectorXd b)
 	int in = -1;							//initialize
 	int out = -1;
 	while (1) {
-		arr = get_Mbase(A, list, in, out);	//get the base Matrix a
+		arr = get_Mbase(A, list, in, out, ptr);	//get the base Matrix a
 		//std::cout << "ret.Ab " << std::endl << arr.Ab << std::endl;
 		//std::cout << "ret.An " << std::endl << arr.An << std::endl;
 		Ab = arr.Ab.bottomRows(arr.Ab.rows()-1);
@@ -151,13 +153,29 @@ double getopt(MatrixXd A, VectorXd b)
 			list(i) = 0;
 		}
 		//std::cout << "list " << list << std::endl;
-
+		double* arr = (double*)malloc(sizeof(double) * A.cols());
+		if (arr == NULL) {
+			std::cout << "memory allocation failed!" << std::endl;
+			exit(5);
+		}
+		for (i = 0; i < A.cols(); i++) {
+			arr[ptr[i]] = b(i);
+		}
+		for (i = 0; i < A.cols(); i++) {
+			X.push_back(arr[i]);
+		}
 		if ((in = Findplus(c))<0 ) {
 			//std::cout << "in: " << in << std::endl;
 			break;
 		}
 		if ((out = Findmax(A.bottomRows(A.rows() - 1) , in, b)) < 0) {
 			//std::cout << "out " << out << std::endl;
+			if (out == -1) {
+				ret = -1; //no solution
+			}
+			else {
+				ret = 0; //without bound
+			}
 			break;
 		}
 		//std::cout << "in: " << in << std::endl;
@@ -166,10 +184,10 @@ double getopt(MatrixXd A, VectorXd b)
 		list(out) = 0;
 		//std::cout << "list " << list << std::endl;
 	}
-	return value;
+	return ret;
 }
 
-Matrixpair get_Mbase(MatrixXd A, VectorXd list, int in, int out)
+Matrixpair get_Mbase(MatrixXd A, VectorXd list, int in, int out, int*& ptr)
 {
 	Matrixpair ret;
 	int i, j, k, m = A.rows();
@@ -192,6 +210,7 @@ Matrixpair get_Mbase(MatrixXd A, VectorXd list, int in, int out)
 		if (list(i) != 0) {
 			//std::cout << list << std::endl;
 			ret.Ab.block(0, j, m, 1) = A.block(0, i, m, 1);	//save the col which it's part of base Matrix
+			ptr[j] = i;
 			j++;
 			//std::cout << "ret.Ab " << std::endl << ret.Ab << std::endl;
 			//std::cout << "i " << std::endl << i << std::endl;
@@ -199,6 +218,7 @@ Matrixpair get_Mbase(MatrixXd A, VectorXd list, int in, int out)
 		else {
 			ret.An.block(0, k, m, 1) = A.block(0, i, m, 1);	//save the col which it isn't part of base Matrix
 			//std::cout << "ret.An " << std::endl << ret.An << std::endl;
+			ptr[k+A.rows()-1] = i;
 			k++;
 		}
 	}
@@ -227,12 +247,12 @@ int Findmax(MatrixXd A, int in, VectorXd b)
 	for (i = 0, index = 0; i < A.rows();i++) {
 		if (b(i) < 0) {
 			//return -1;		//no solution
-			std::cout << "Error3: no solution!" << std::endl;
-			exit(3);
+			//std::cout << "Error3: no solution!" << std::endl;
+			//exit(3);
+			index = -1;
+			break;
 		}
 		if (A(i,in)<=0) {
-			//return -2;		//without bound
-			
 			continue;
 		}
 		if (b(i) == 0) {
@@ -246,8 +266,9 @@ int Findmax(MatrixXd A, int in, VectorXd b)
 		}
 	}
 	if (min == IFF) {
-		std::cout << "Error4: without bound!" << std::endl;
-		exit(4);
+		//std::cout << "Error4: without bound!" << std::endl;
+		//exit(4);
+		index = -2;
 	}
 	//std::cout << "hello" << std::endl;
 	return index;
