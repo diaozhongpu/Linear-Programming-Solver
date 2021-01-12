@@ -1,4 +1,4 @@
-﻿/*
+/*
 author:zzy
 说明：这个代码可以独立执行，要求如下：
 1.化为等式矩阵
@@ -37,39 +37,39 @@ int Findplus(VectorXd c);
 int Findmax(MatrixXd A, int in, VectorXd b);
 double getvalue(VectorXd b);
 
-int main()
-{
-	//example1
-	/*MatrixXd A(3,4);
-	VectorXd b(2);
-	A << 1, 2, 0, 0,
-		1, 1, 1, 0,
-		0, 1, 0, 1;
-	b << 3, 1;*/
-
-	//example2
-	/*MatrixXd A(4,5);
-	VectorXd b(3);
-	A << 0, 1, -2, 0, 0,
-		1, -2, 1, 0, 0,
-		0, 1, -3, 1, 0,
-		0, 1, -1, 0, 1;
-	b << 2, 1, 2;*/
-
-	//example3
-	MatrixXd A(3,4);
-	VectorXd b(2);
-	A << -1, 0, -1, 0,
-		1, 2, 0, 1,
-		0, 1, 2, 0;
-	b << 5, 6;
-
-	double result = 0;
-	//std::cout << "123" << std::endl;
-	result = getopt(A, b);
-	std::cout << "The result is: " << result <<std::endl;
-	return 0;
-}
+//int main()
+//{
+//	//example1
+//	/*MatrixXd A(3,4);
+//	VectorXd b(2);
+//	A << 1, 2, 0, 0,
+//		1, 1, 1, 0,
+//		0, 1, 0, 1;
+//	b << 3, 1;*/
+//
+//	//example2
+//	/*MatrixXd A(4,5);
+//	VectorXd b(3);
+//	A << 0, 1, -2, 0, 0,
+//		1, -2, 1, 0, 0,
+//		0, 1, -3, 1, 0,
+//		0, 1, -1, 0, 1;
+//	b << 2, 1, 2;*/
+//
+//	//example3
+//	MatrixXd A(3,4);
+//	VectorXd b(2);
+//	A << -1, 0, -1, 0,
+//		1, 2, 0, 1,
+//		0, 1, 2, 0;
+//	b << 5, 6;
+//
+//	double result = 0;
+//	//std::cout << "123" << std::endl;
+//	result = getopt(A, b);
+//	std::cout << "The result is: " << result <<std::endl;
+//	return 0;
+//}
 
 double getopt(MatrixXd A, VectorXd b)
 {

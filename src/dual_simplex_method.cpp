@@ -20,7 +20,7 @@ using namespace std;
  * 入基变量选不重复的。得到解决。目前做法是，记录每个变量入基的次数，优先让入基次数少的入基。
  * 如果还是出现死循环，策略：当他入基次数特别多的时候，输出一下每次的矩阵，以及对应theta，并且使程序停下来。（暂未实现）
 */
-double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<double> &x){
+double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<double> &x, double &result){
     //c有n个，但是a一行有n+1列。
     int n = c.size();
     int m = a.size();
@@ -28,7 +28,6 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
     vector <double> delta;//检验数，全部为非正表示对偶可行。
     vector <double> theta;//这个是选择入基变量时的依据，正数theta越小，越优先入基。
     vector <int> base;//用来记录m个基，m个基对应n个x中的哪些x
-    double result = 0;
     for(int i =0;i<n;i++){
         delta.push_back(c[i]);
     }//从矩阵中得到delta
@@ -80,7 +79,8 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
         for(int i=0;i<n;i++){
             if(delta[i] > 0){
                 cout<<"dual not works"<<endl;
-                return 0xffffffff;//对偶问题不可行
+                return 0;
+                // return 0xffffffff;//对偶问题不可行
             }
             else{
                 cout<<delta[i];
@@ -137,7 +137,8 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
                 }
                 else{// if not taken
                     cout<<"cannot let the simplex works"<<endl;
-                    return 0xffffffff;
+                    return -1;
+                    // return 0xffffffff;
                 }
             }//选定了入基变量，此时可以换基了。
             //换基
@@ -170,7 +171,7 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
         a[j][n-1] = b[j];
         x[base[j]] = b[j];
     }//把b赋回去，也把数值交给x。
-    return result;
+    return 1;
 }
 
 

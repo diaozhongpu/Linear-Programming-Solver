@@ -18,6 +18,6 @@ using namespace std;
  * 入基变量选不重复的。得到解决。目前做法是，记录每个变量入基的次数，优先让入基次数少的入基。
  * 如果还是出现死循环，策略：当他入基次数特别多的时候，输出一下每次的矩阵，以及对应theta，并且使程序停下来。（暂未实现）
 */
-double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<double> &x);
+double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<double> &x, double &result);
 
 #endif 

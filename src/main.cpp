@@ -12,6 +12,7 @@
 #include <cmath>
 
 #include "dual_simplex_method.h"
+#include "LP_Simplex Method.h"
 
 using namespace std;
 
@@ -255,7 +256,7 @@ int main(void)
         printf("Single");
         cout<<"A:"; MatrixPrint(A);
         cout<<"C:"; VectorPrint(C);
-		finopt=dual_simplex_method(A, C, finx);
+		k=dual_simplex_method(A, C, finx, finopt);
 
 		finE=E;
 
@@ -382,7 +383,7 @@ int main(void)
             printf("Multi");
             cout<<"A:"; MatrixPrint(A);
             cout<<"C:"; VectorPrint(C);
-            opt=dual_simplex_method(A, C, x);
+            k=dual_simplex_method(A, C, x, opt);
 			
 			if(opt>finopt)//update optimal if has x in R
 			{
@@ -400,7 +401,7 @@ int main(void)
 	// merge opt
 	// fix variable sign
 	vector<double>::iterator realxnth;
-	switch(1)//TODO:k
+	switch(k)//TODO:k
 	{
 		case -1: 
 			cout<<"No Solution"<<endl;
@@ -413,7 +414,6 @@ int main(void)
 			{
 				realx.push_back(finx[i]*finE[i]);
 			}
-			t=n-1;
 			for(i=0; i<n; i++)
 			{
 				for(j=0; j<m-artVarNum; j++)
@@ -426,6 +426,7 @@ int main(void)
 				}
 			}
 			/*
+            t=n-1;
 			for(i=0; i<artVarNum; i++)
 			{
 				while(t>=0&&d[t]!=0)//n=d.size()
