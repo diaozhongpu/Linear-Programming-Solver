@@ -38,8 +38,9 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
     cout<<"base"<<endl;
     for(int j =0;j<m;j++){
         base.push_back(n-m+j);
-        cout<<base[j]<<" "<<endl;
+        cout<<base[j]<<" ";
     }//从矩阵中得到base
+    cout<<endl;
     cout<<"A ori"<<endl;
     for(int j =0;j<m;j++){
         for(int i =0;i<n;i++){
@@ -69,7 +70,6 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
         for(int i=0;i<n;i++){
             a[k][i] = a[k][i]/line_transfer;
         }
-        
     }
     cout<<"A"<<endl;
     for(int j =0;j<m;j++){
