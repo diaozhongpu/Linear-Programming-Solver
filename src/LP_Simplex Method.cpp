@@ -28,6 +28,7 @@ using namespace Eigen;
 
 double LP_Simplex_Method(std::vector< std::vector<double> > A, std::vector<double> C)
 {
+	cout<<"Simplex Method--------------"<<endl;
 	int m = A.size();
 	int	n = A[0].size()-1;
 	int tmp = C.size();

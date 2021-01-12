@@ -22,6 +22,7 @@ using namespace std;
 */
 double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<double> &x, double &result){
     //c有n个，但是a一行有n+1列。
+    cout<<"dual simplex method ---------------------"<<endl;
     int n = c.size();
     int m = a.size();
     vector <double> b;//m个约束的等式右边
@@ -32,10 +33,12 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
         delta.push_back(c[i]);
     }//从矩阵中得到delta
     for(int j =0;j<m;j++){
-        b.push_back(a[j][n-1]);
+        b.push_back(a[j][n]);
     }//从矩阵中得到b
+    cout<<"base"<<endl;
     for(int j =0;j<m;j++){
         base.push_back(n-m+j);
+        cout<<base[j]<<" "<<endl;
     }//从矩阵中得到base
     cout<<"A ori"<<endl;
     for(int j =0;j<m;j++){
@@ -50,20 +53,23 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
             transfer.push_back(a[j][base[k]]/a[k][base[k]]);
         }
         for(int j=0;j<m;j++){
-            for(int i=0;i<n;i++){
-                if(j == k){
-                    a[k][i] = a[k][i]/a[k][base[k]];
-                }
-                else{
+            if(j != k){
+                for(int i = 0;i<n;i++){
                     a[j][i] = a[j][i]-a[k][i]*transfer[j];
                 }
+                b[j] = b[j]-b[k]*transfer[j];
             }
-            if(j == k)b[j] = b[j]/a[k][base[k]];
-            else b[j] = b[j]-b[k]*transfer[j];
         }//修改所有行列
         for(int i = 0; i < n;i++){
             delta[i] = delta[i] - a[k][i]*delta[base[k]]/a[k][base[k]];
         }//修改delta
+        //修改当前第k行
+        double line_transfer = a[k][base[k]];
+        b[k] = b[k]/line_transfer;
+        for(int i=0;i<n;i++){
+            a[k][i] = a[k][i]/line_transfer;
+        }
+        
     }
     cout<<"A"<<endl;
     for(int j =0;j<m;j++){
@@ -72,32 +78,42 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
         }
         cout<<endl;
     }
+    cout<<"B"<<endl;
+    for(int j =0;j<m;j++){
+        cout<<b[j] <<" ";
+    }
+    cout<<endl;
     vector <int> base_in_history(n,0);//定义入基的历史个数，入基次数多的尽可能不入基。
     while(1){
         //判断对偶问题是否可行
-        cout<<"检验数 : "<<endl;
+        cout<<"delta : "<<endl;
         for(int i=0;i<n;i++){
             if(delta[i] > 0){
                 cout<<"dual not works"<<endl;
-                return 0;
-                // return 0xffffffff;//对偶问题不可行
+                return 0;//对偶问题不可行
+                // return 0xffffffff;
             }
             else{
-                cout<<delta[i];
+                cout<<delta[i]<<" ";
             }
         }
         cout<<endl;
         int num = 0;
+        cout<<"b : "<<endl;
         for(int i = 0;i<m;i++){
             if(b[i] >= 0){
                 num++;
             }
+            cout<<b[i]<<" "<<endl;
         }
         if(num == m){
             cout<<"simplex works"<<endl;
+            result = 0.0;
             for(int j=0;j<m;j++){
-                result += c[base[j]]*b[base[j]];//当前的x值乘以原来的c值得到结果。
+                result += c[base[j]]*b[j];//当前的x值乘以原来的c值得到结果。
+                cout<<"c : "<<c[base[j]]<<" b : "<<b[j]<<endl;
             }
+            cout<<"result : " << result <<endl;
             break;
         }
         else{//b中一定有小于0的
@@ -149,20 +165,22 @@ double dual_simplex_method(vector< vector<double> > a, vector<double> c, vector<
                 transfer[j] = a[j][base[cur_out_base]] / a[cur_out_base][base[cur_out_base]];
             }
             for(int j=0;j<m;j++){
-                for(int i=0;i<n;i++){
-                    if(j == cur_out_base){
-                        a[cur_out_base][i] = a[cur_out_base][i]/a[cur_out_base][base[cur_out_base]];//就是当前刚刚入基的列
-                    }
-                    else{
+                if(j != cur_out_base){
+                    for(int i=0;i<n;i++){
                         a[j][i] = a[j][i]-a[cur_out_base][i]*transfer[j];
-                    }
+                        
+                    }//除了当前刚刚入基的列
+                    b[j] = b[j]-b[cur_out_base]*transfer[j];
                 }
-                if(j == cur_out_base)b[j] = b[j]/a[cur_out_base][base[cur_out_base]];
-                else b[j] = b[j]-b[cur_out_base]*transfer[j];
             }//修改所有行列，使得整个矩阵又变成标准形式。
             //修改delta
             for(int i = 0; i < n;i++){
                 delta[i] = delta[i] - a[cur_out_base][i]*delta[base[cur_out_base]]/a[cur_out_base][base[cur_out_base]];
+            }
+            double line_transfer = a[cur_out_base][base[cur_out_base]];
+            b[cur_out_base] = b[cur_out_base]/line_transfer;
+            for(int i = 0; i <n;i++){
+                a[cur_out_base][i] = a[cur_out_base][i]/line_transfer;
             }
         }
 
