@@ -65,7 +65,7 @@ int main(void)
 	int k = 0;
 	vector<double> realx;
 	vector<double> finx;
-	double finopt=-INFINITY; // min or max?
+	double finopt=INFINITY; // min or max?
 	vector<int> finE;
 	vector<double> x;
 	double opt;
@@ -166,7 +166,11 @@ int main(void)
 
 
 		// add artificial variables +-a.r.; not for == 
-		C=c;
+		for(i=0; i<c.size(); i++)
+		{
+			C.push_back(-c[i]);
+		}
+		//C=c;
 
 		for(j=0; j<m-artVarNum; j++)
 		{
@@ -385,7 +389,7 @@ int main(void)
             cout<<"C:"; VectorPrint(C);
             k=dual_simplex_method(A, C, x, opt);
 			
-			if(opt>finopt)//update optimal if has x in R
+			if(opt<finopt)//update optimal if has x in R
 			{
 				finopt=opt;
 				finx=x;
@@ -443,7 +447,7 @@ int main(void)
 			*/
 			//i==artVarNum, t==-1/last d[i]
 			cout<<"Solution:"<<endl;
-			cout<<"Objective Function Optimal: "<<finopt<<endl;
+			cout<<"Objective Function Optimal: "<<-finopt<<endl;
 			cout<<"Variable Values: "<<endl;
 			VectorPrint(realx);
 			cout<<endl;
