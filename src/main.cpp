@@ -130,13 +130,22 @@ int main(void)
 		}
 		else
 		{
-			baseMap.insert(baseMap.begin(), j);
-			d.insert(d.begin(), e[j]);
-			dnth = d.begin() + j+1;
-			d.erase(dnth);
-			a.insert(a.begin(), a[j]);
-			anth = a.begin() + j+1;
-			a.erase(anth);
+            /*
+                baseMap.insert(baseMap.begin(), j);
+                d.insert(d.begin(), e[j]);
+                dnth = d.begin() + j+1;
+                d.erase(dnth);
+                a.insert(a.begin(), a[j]);
+                anth = a.begin() + j+1;
+                a.erase(anth);
+             */
+            d[j]=1;
+            artVarNum++;
+            a.push_back(a[j]);
+            b.push_back(b[j]);
+            d.push_back(-1);
+            m++;
+            //artVarNum++;
 		}
 	}
 
@@ -148,7 +157,7 @@ int main(void)
 
 	// divide x \in R: e 1, >=0; 0, R; -1, <=0
 	vector<int> xInR;
-	for(i=0; i<n; i++)
+	for(i=0; i<e.size(); i++)
 	{
 		if(e[i]==0)
 		{
@@ -208,6 +217,7 @@ int main(void)
 		}
 
 		// 行坘�?==为基
+        /*
         int nE=(int)E.size();
 		for(j=1; j<=m-artVarNum; j++)//m-artVarNum-1
 		{
@@ -264,6 +274,7 @@ int main(void)
 				}
 			}
 		}
+         */
 
 		// change variable sign
 		for(i=0; i<(int)E.size(); i++)//n+artVarNum
@@ -367,6 +378,7 @@ int main(void)
 			}
 
 			// 行坘�?==为基
+            /*
             int nE=(int)E.size();
             for(j=1; j<=m-artVarNum; j++)//m-artVarNum-1
             {
@@ -423,6 +435,7 @@ int main(void)
                     }
                 }
             }
+             */
 
 			// change variable sign
 			for(i=0; i<(int)E.size(); i++)//n+artVarNum
