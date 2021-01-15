@@ -356,7 +356,10 @@ int main(void)
 
 			// add artificial variables +-a.r.; not for == 
 
-			C=c;
+            for(i=0; i<c.size(); i++)
+            {
+                C.push_back(-c[i]);
+            }
 
             A.clear();
 			for(j=0; j<m-artVarNum; j++)
