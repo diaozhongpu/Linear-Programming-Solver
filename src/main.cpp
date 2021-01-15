@@ -191,7 +191,8 @@ int main(void)
 		E=e;//copy
 
 
-		// add artificial variables +-a.r.; not for == 
+		// add artificial variables +-a.r.; not for ==
+        C.clear();
 		for(i=0; i<c.size(); i++)
 		{
 			C.push_back(-c[i]);
@@ -355,7 +356,7 @@ int main(void)
 
 
 			// add artificial variables +-a.r.; not for == 
-
+            C.clear();
             for(i=0; i<c.size(); i++)
             {
                 C.push_back(-c[i]);
