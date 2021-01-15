@@ -121,6 +121,7 @@ int main(void)
 	int artVarNum=0; // number of artificial variables
 	vector<int>::iterator dnth;
 	vector< vector<double> >::iterator anth;
+    vector<double>::iterator bnth;
 	vector<int> baseMap;
 	for(j=0; j<(int)d.size(); j++)
 	{
@@ -130,7 +131,7 @@ int main(void)
 		}
 		else
 		{
-            /*
+            
                 baseMap.insert(baseMap.begin(), j);
                 d.insert(d.begin(), e[j]);
                 dnth = d.begin() + j+1;
@@ -138,13 +139,18 @@ int main(void)
                 a.insert(a.begin(), a[j]);
                 anth = a.begin() + j+1;
                 a.erase(anth);
-             */
+                b.insert(b.begin(), b[j]);
+                bnth = b.begin() + j+1;
+                b.erase(bnth);
+            /*
             d[j]=1;
             artVarNum++;
             a.push_back(a[j]);
             b.push_back(b[j]);
             d.push_back(-1);
             m++;
+             */
+             
             //artVarNum++;
 		}
 	}
