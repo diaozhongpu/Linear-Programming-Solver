@@ -70,7 +70,13 @@ int main(void)
 	vector<int> finE;
 	vector<double> x;
 	double opt;
-
+    int useSimplex; // 0 for dual, 1 for simplex
+    cout<<"input 0 for dual, 1 for simplex"<<endl;
+    cin>>useSimplex;
+    useSimplex=useSimplex?1:0;
+    
+    
+    
 	cout<<"Please input"<<endl;
 
 	// Input Process
@@ -131,6 +137,7 @@ int main(void)
 		}
 		else
 		{
+            if(useSimplex==0){
             
                 baseMap.insert(baseMap.begin(), j);
                 d.insert(d.begin(), e[j]);
@@ -142,15 +149,18 @@ int main(void)
                 b.insert(b.begin(), b[j]);
                 bnth = b.begin() + j+1;
                 b.erase(bnth);
-            /*
-            d[j]=1;
-            artVarNum++;
-            a.push_back(a[j]);
-            b.push_back(b[j]);
-            d.push_back(-1);
-            m++;
-             */
+            }
+            else
+            {
+            
+                d[j]=1;
+                artVarNum++;
+                a.push_back(a[j]);
+                b.push_back(b[j]);
+                d.push_back(-1);
+                m++;
              
+            }
             //artVarNum++;
 		}
 	}
