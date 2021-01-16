@@ -534,21 +534,29 @@ int main(void)
 			break;
 		case 1:
 			//for(i=n-artVarNum; i<n; i++)
-            for(i=0; i<n-(m-artVarNum); i++)
-			{
-				realx.push_back(finx[i]*finE[i]);
-			}
-			for(i=0; i<n; i++)
-			{
-				for(j=0; j<m-artVarNum; j++)
-				{
-					if(baseMap[j]==i)
-					{
-						realxnth=realx.begin()+i;
-						realx.insert(realxnth, finx[j]*finE[j]);
-					}
-				}
-			}
+            if(useSimplex)
+            {
+                for(i=0; i<n-(m-artVarNum); i++)
+                {
+                    realx.push_back(finx[i]*finE[i]);
+                }
+                for(i=0; i<n; i++)
+                {
+                    for(j=0; j<m-artVarNum; j++)
+                    {
+                        if(baseMap[j]==i)
+                        {
+                            realxnth=realx.begin()+i;
+                            realx.insert(realxnth, finx[j]*finE[j]);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                realx=finx;
+            }
+            
 			/*
             t=n-1;
 			for(i=0; i<artVarNum; i++)
