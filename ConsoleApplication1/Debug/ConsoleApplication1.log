@@ -1,0 +1,9 @@
+﻿  main.cpp
+C:\Users\jxazz\Desktop\ConsoleApplication1\ConsoleApplication1\main.cpp(176,16): warning C4018: “<”: 有符号/无符号不匹配
+C:\Users\jxazz\Desktop\ConsoleApplication1\ConsoleApplication1\main.cpp(196,17): warning C4018: “<”: 有符号/无符号不匹配
+C:\Users\jxazz\Desktop\ConsoleApplication1\ConsoleApplication1\main.cpp(327,24): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+C:\Users\jxazz\Desktop\ConsoleApplication1\ConsoleApplication1\main.cpp(361,18): warning C4018: “<”: 有符号/无符号不匹配
+C:\Users\jxazz\Desktop\ConsoleApplication1\ConsoleApplication1\main.cpp(496,26): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+C:\Users\jxazz\Desktop\ConsoleApplication1\ConsoleApplication1\main.cpp(504,30): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+C:\Users\jxazz\Desktop\ConsoleApplication1\ConsoleApplication1\main.cpp(53,19): warning C4101: “t”: 未引用的局部变量
+  ConsoleApplication1.vcxproj -> C:\Users\jxazz\Desktop\ConsoleApplication1\Debug\ConsoleApplication1.exe
